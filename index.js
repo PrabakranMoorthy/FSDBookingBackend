@@ -34,13 +34,7 @@ app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 
-app.use(
-  cors({
-    origin: "http://localhost:5000", // Allow requests from this origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
-  })
-);
+
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

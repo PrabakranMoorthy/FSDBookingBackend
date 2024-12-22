@@ -11,6 +11,7 @@ import {
   updateHotel,
 } from "../Controllers/hotel.js";
 import { verifyAdmin } from "../Utils/verifyToken.js";
+import authMiddleware from "../Middleware/auth.middleware.js";
 
 const router = express.Router();
 //CREATE
