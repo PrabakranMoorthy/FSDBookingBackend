@@ -2,11 +2,7 @@ import User from "../Models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../Utils/error.js";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-//REGISTER
 export const register = async (req, res, next) => {
   try {
     const salt = bcrypt.genSaltSync(10);
@@ -23,27 +19,23 @@ export const register = async (req, res, next) => {
     next(err);
   }
 };
-
-/*LOGIN
-
 export const login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ username: req.body.username });
     if (!user) return next(createError(404, "User not found!"));
 
-    // const isPasswordCorrect = await bcrypt.compare(
-    //   req.body.password,
-    //   user.password
-    // );
-    if (user.password != req.body.password)
+    const isPasswordCorrect = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!isPasswordCorrect)
       return next(createError(400, "Wrong password or username!"));
 
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },
-      process.env.JWT
+      process.env.JWT_SECRET
     );
 
-    localStorage.setItem("token", token);
     const { password, isAdmin, ...otherDetails } = user._doc;
     res
       .cookie("access_token", token, {
@@ -53,34 +45,5 @@ export const login = async (req, res, next) => {
       .json({ details: { ...otherDetails }, isAdmin });
   } catch (err) {
     next(err);
-  }
-};
-
-*/
-
-//LOGIN
-
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User Not Found" });
-    }
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
-    }
-
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    user.token = token;
-    await user.save();
-    res
-      .status(200)
-      .json({ message: "User Logged In Successfully", token: token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 };

@@ -10,20 +10,20 @@ import {
   getHotels,
   updateHotel,
 } from "../Controllers/hotel.js";
+import Hotel from "../Models/Hotel.js";
 import { verifyAdmin } from "../Utils/verifyToken.js";
-import authMiddleware from "../Middleware/auth.middleware.js";
 
 const router = express.Router();
 //CREATE
-router.post("/create", verifyAdmin, createHotel);
+router.post("/",verifyAdmin,  createHotel);
 
-router.post("/Big", BigHotel);
+router.post("/Big",verifyAdmin, BigHotel);
 
 //UPDATE
-router.put("/:id", verifyAdmin, updateHotel);
+router.put("/:id",verifyAdmin,  updateHotel);
 
 //DELETE
-router.delete("/:id", verifyAdmin, deleteHotel);
+router.delete("/:id",verifyAdmin,  deleteHotel);
 
 //GET Hotel
 router.get("/find/:id", getHotel);
