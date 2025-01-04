@@ -121,7 +121,23 @@ export const getHotelRooms = async (req, res, next) => {
         return Room.findById(room);
       })
     );
-    res.status(200).json(list);
+    const data = list
+      .filter((room) => room && room.roomNumbers) // Exclude null or invalid rooms
+      .flatMap((room) =>
+        room.roomNumbers.map((roomNumber) => ({
+          value: room._id + "_" + roomNumber._id,
+          label:
+            "Room No: " +
+            roomNumber.number +
+            " Type:" +
+            room.type +
+            " Price:" +
+            room.price,
+        }))
+      );
+    console.log(data);
+
+    res.status(200).json(data);
   } catch (err) {
     next(err);
   }

@@ -39,7 +39,7 @@ export const updateRoom = async (req, res, next) => {
 export const updateRoomAvailability = async (req, res, next) => {
   try {
     await Room.updateOne(
-      { "roomNumbers._id": req.params.id },
+      { "roomNumbers._id": req.params.id.split("_")[1] },
       {
         $push: {
           "roomNumbers.$.unavailableDates": req.body.dates,
@@ -85,6 +85,43 @@ export const getRooms = async (req, res, next) => {
   try {
     const rooms = await Room.find();
     res.status(200).json(rooms);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const bookRoom = async (req, res, next) => {
+  try {
+    const room = await Room.findById(req.body.id.split("_")[0]);
+    userStartDate = new Date(req.body.start_date);
+    userEndDate = new Date(req.body.end_date);
+    room.roomNumbers.forEach((roomNumber) => {
+      if (roomNumber._id == req.params.id.split("_")[1]) {
+        roomNumber.unavailableDates.forEach((date) => {
+          existingStartDate = new Date(date[0]);
+          existingEndDate = new Date(date[1]);
+
+          if (
+            userStartDate < existingEndDate &&
+            userEndDate > existingStartDate
+          ) {
+            return res.status(422).json({
+              error: "Validation Error",
+              message: "The room is unavailable for the selected dates.",
+            });
+          }
+        });
+      }
+    });
+    await Room.updateOne(
+      { "roomNumbers._id": req.params.id.split("_")[1] },
+      {
+        $push: {
+          "roomNumbers.$.unavailableDates": req.body.dates,
+        },
+      }
+    );
+    res.status(200).json({ message: "Room booked successfully!" });
   } catch (err) {
     next(err);
   }
