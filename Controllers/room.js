@@ -92,12 +92,12 @@ export const getRooms = async (req, res, next) => {
 
 export const bookRoom = async (req, res, next) => {
   try {
-    const room = await Room.findById(req.body.id.split("_")[0]);
-    const userStartDate = new Date(req.body.start_date);
-    const userEndDate = new Date(req.body.end_date);
+    const room = await Room.findById(req.body.firstDropdownRoom.split("_")[0]);
+    const userStartDate = new Date(req.body.startDate);
+    const userEndDate = new Date(req.body.endDate);
     let flag = true;
     room.roomNumbers.forEach((roomNumber) => {
-      if (roomNumber._id == req.body.id.split("_")[1]) {
+      if (roomNumber._id == req.body.firstDropdownRoom.split("_")[1]) {
         const dateArray = roomNumber.unavailableDates;
         for (let i = 0; i < dateArray.length; i += 2) {
           const existingStartDate = new Date(dateArray[i]);
@@ -115,7 +115,7 @@ export const bookRoom = async (req, res, next) => {
     });
     if (flag) {
       await Room.updateOne(
-        { "roomNumbers._id": req.body.id.split("_")[1] },
+        { "roomNumbers._id": req.body.firstDropdownRoom.split("_")[1] },
         {
           $push: {
             "roomNumbers.$.unavailableDates": [userStartDate, userEndDate],
