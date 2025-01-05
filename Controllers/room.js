@@ -96,6 +96,7 @@ export const bookRoom = async (req, res, next) => {
     const userStartDate = new Date(req.body.startDate);
     const userEndDate = new Date(req.body.endDate);
     let flag = true;
+
     room.roomNumbers.forEach((roomNumber) => {
       if (roomNumber._id == req.body.firstDropdownRoom.split("_")[1]) {
         const dateArray = roomNumber.unavailableDates;

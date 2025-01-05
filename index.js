@@ -24,16 +24,13 @@ mongoose.connection.on("disconnected", () => {
   console.log("MongoDB disconnected");
 });
 
-
 //middlewares
 app.use(
   cors({
-    origin: (origin, callback) => {
-        callback(null, true);
-    },
+    origin: "http://localhost:3000", // Your frontend's URL
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"], // Include other headers as needed
-    credentials: true, // Allow credentials (cookies, authorization headers)
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow credentials (cookies, headers)
   })
 );
 app.use(cookieParser());
