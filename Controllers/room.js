@@ -93,35 +93,42 @@ export const getRooms = async (req, res, next) => {
 export const bookRoom = async (req, res, next) => {
   try {
     const room = await Room.findById(req.body.id.split("_")[0]);
-    userStartDate = new Date(req.body.start_date);
-    userEndDate = new Date(req.body.end_date);
+    const userStartDate = new Date(req.body.start_date);
+    const userEndDate = new Date(req.body.end_date);
+    let flag = true;
     room.roomNumbers.forEach((roomNumber) => {
-      if (roomNumber._id == req.params.id.split("_")[1]) {
-        roomNumber.unavailableDates.forEach((date) => {
-          existingStartDate = new Date(date[0]);
-          existingEndDate = new Date(date[1]);
+      if (roomNumber._id == req.body.id.split("_")[1]) {
+        const dateArray = roomNumber.unavailableDates;
+        for (let i = 0; i < dateArray.length; i += 2) {
+          const existingStartDate = new Date(dateArray[i]);
+          const existingEndDate = new Date(dateArray[i + 1]);
 
           if (
             userStartDate < existingEndDate &&
             userEndDate > existingStartDate
           ) {
-            return res.status(422).json({
-              error: "Validation Error",
-              message: "The room is unavailable for the selected dates.",
-            });
+            flag = false;
+            break;
           }
-        });
+        }
       }
     });
-    await Room.updateOne(
-      { "roomNumbers._id": req.params.id.split("_")[1] },
-      {
-        $push: {
-          "roomNumbers.$.unavailableDates": req.body.dates,
-        },
-      }
-    );
-    res.status(200).json({ message: "Room booked successfully!" });
+    if (flag) {
+      await Room.updateOne(
+        { "roomNumbers._id": req.body.id.split("_")[1] },
+        {
+          $push: {
+            "roomNumbers.$.unavailableDates": [userStartDate, userEndDate],
+          },
+        }
+      );
+      res.status(200).json({ message: "Room booked successfully!" });
+    } else {
+      res.status(422).json({
+        error: "Validation Error",
+        message: "The room is unavailable for the selected dates.",
+      });
+    }
   } catch (err) {
     next(err);
   }

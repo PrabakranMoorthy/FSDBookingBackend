@@ -22,12 +22,12 @@ router.put("/:id", verifyAdmin, updateRoom);
 //DELETE
 router.delete("/:id/:hotelid", verifyAdmin, deleteRoom);
 
+router.get("/bookroom", bookRoom);
+
 //GET
 router.get("/:id", getRoom);
 
 //GET ALL
 router.get("/", getRooms);
-
-router.get("/bookroom", bookRoom);
 
 export default router;
