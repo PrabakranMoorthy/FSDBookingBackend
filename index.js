@@ -27,7 +27,7 @@ mongoose.connection.on("disconnected", () => {
 //middlewares
 app.use(
   cors({
-    origin: "http://localhost:3000", // Your frontend's URL
+    origin: "https://lucky-conkies-4335b4.netlify.app", // Your frontend's URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Allow credentials (cookies, headers)
