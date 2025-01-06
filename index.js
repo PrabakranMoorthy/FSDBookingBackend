@@ -27,7 +27,8 @@ mongoose.connection.on("disconnected", () => {
 //middlewares
 app.use(
   cors({
-    origin: "https://lucky-conkies-4335b4.netlify.app", // Your frontend's URL
+    origin:
+      "https://fsd-booking-frontend-git-main-prabakranmoorthys-projects.vercel.app", // Your frontend's URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Allow credentials (cookies, headers)
