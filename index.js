@@ -27,8 +27,7 @@ mongoose.connection.on("disconnected", () => {
 //middlewares
 app.use(
   cors({
-    origin:
-      "https://fsd-booking-frontend-git-main-prabakranmoorthys-projects.vercel.app", // Your frontend's URL
+    origin: "http://localhost:3000", // Your frontend's URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Allow credentials (cookies, headers)
